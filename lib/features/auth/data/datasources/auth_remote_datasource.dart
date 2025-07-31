@@ -1,3 +1,4 @@
+import 'package:airbnb_clone_flutter/core/utils/app_logger.dart';
 import 'package:dio/dio.dart';
 import '../models/user_model.dart';
 
@@ -6,7 +7,7 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource(this.dio);
 
-  // feature login
+  // ✅ Đăng nhập
   Future<UserModel> login(String email, String password) async {
     try {
       final response = await dio.post(
@@ -14,27 +15,35 @@ class AuthRemoteDataSource {
         data: {'email': email, 'password': password},
       );
 
-      return UserModel.fromJson(response.data);
+      AppLogger.prettyJson(response.data, tag: 'Login response');
+
+      final content = response.data['content'];
+      return UserModel.fromJson(content); // Chuyển content → model
     } on DioException catch (e) {
-      throw Exception(
-        e.response?.data.toString() ?? 'Unknown error',
-      ); // custom lỗi
+      final message =
+          e.response?.data['content'] ??
+          e.response?.data['message'] ??
+          'Đăng nhập thất bại';
+      throw Exception(message);
     }
   }
 
-  // Register
-  Future<RegisterModel> register(String email, String password) async {
+  // ✅ Đăng ký (chỉ trả true/false hoặc throw nếu lỗi)
+  Future<void> register(String email, String password) async {
     try {
       final response = await dio.post(
         '/auth/signup',
         data: {'email': email, 'password': password},
       );
 
-      return RegisterModel.fromJson(response.data);
+      AppLogger.prettyJson(response.data, tag: 'Register response');
+      // Bạn có thể xử lý nếu muốn lấy gì thêm từ response.data['content']
     } on DioException catch (e) {
-      throw Exception(
-        e.response?.data.toString() ?? 'Unknown error',
-      ); // custom lỗi
+      final message =
+          e.response?.data['content'] ??
+          e.response?.data['message'] ??
+          'Đăng ký thất bại';
+      throw Exception(message);
     }
   }
 }
