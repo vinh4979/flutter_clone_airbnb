@@ -1,6 +1,8 @@
 import 'package:airbnb_clone_flutter/features/auth/presentation/providers/auth_provider.dart';
+import 'package:airbnb_clone_flutter/features/favorites/presentation/screens/favorites_screen.dart';
 import 'package:airbnb_clone_flutter/features/profile_reactive/domain/entities/user.dart';
 import 'package:airbnb_clone_flutter/features/profile_reactive/presentation/providers/user_profile_provider.dart';
+import 'package:airbnb_clone_flutter/features/trips/presentation/widgets/trip_tab_view.dart';
 import 'package:airbnb_clone_flutter/shared/modals/modal_service.dart';
 import 'package:airbnb_clone_flutter/shared/modals/modal_types.dart';
 import 'package:flutter/material.dart';
@@ -91,14 +93,98 @@ class LoggedInProfileView extends ConsumerWidget {
               _buildTile(Icons.edit, 'Chỉnh sửa hồ sơ', () {
                 showAppModal(context, AppModalType.editProfile);
               }),
-              _buildTile(Icons.lock_outline, 'Đổi mật khẩu', () {}),
-              _buildTile(Icons.house, 'Trở thành chủ nhà', () {}),
+              _buildTile(Icons.lock_outline, 'Đổi mật khẩu', () {
+                showDialog(
+                  context: context,
+                  builder:
+                      (_) => AlertDialog(
+                        title: const Text('Tính năng đang phát triển'),
+                        content: const Text(
+                          'Chức năng đổi mật khẩu sẽ sớm được cập nhật.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text('Đóng'),
+                          ),
+                        ],
+                      ),
+                );
+              }),
+
+              _buildTile(Icons.house, 'Quản lý phòng cho thuê', () {
+                showDialog(
+                  context: context,
+                  builder:
+                      (_) => AlertDialog(
+                        title: const Text('Không đủ quyền'),
+                        content: const Text(
+                          'Bạn cần quyền để sử dụng tính năng này.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: TextButton.styleFrom(
+                              backgroundColor:
+                                  Colors
+                                      .black, // hoặc Color(0xFF222222) cho xám đậm
+                              foregroundColor: Colors.white, // chữ trắng
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text('Đóng'),
+                          ),
+                        ],
+                      ),
+                );
+              }),
+
               const Divider(height: 32),
 
               // 📘 Hoạt động
               _buildSectionTitle('Hoạt động'),
-              _buildTile(Icons.history, 'Lịch sử đặt phòng', () {}),
-              _buildTile(Icons.favorite_border, 'Danh sách yêu thích', () {}),
+              _buildTile(Icons.history, 'Lịch sử đặt phòng', () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder:
+                        (_) => Scaffold(
+                          appBar: AppBar(
+                            title: const Text('Lịch sử đặt phòng'),
+                          ),
+                          body: const TripTabView(),
+                        ),
+                  ),
+                );
+              }),
+              _buildTile(Icons.favorite_border, 'Danh sách yêu thích', () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder:
+                        (_) => Scaffold(
+                          appBar: AppBar(
+                            title: const Text('Danh sách yêu thích'),
+                          ),
+                          body: const FavoriteScreen(),
+                        ),
+                  ),
+                );
+              }),
               const Divider(height: 32),
 
               // 🚪 Khác
@@ -147,7 +233,7 @@ class LoggedInProfileView extends ConsumerWidget {
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-      visualDensity: const VisualDensity(vertical: -2), // Gọn chiều cao
+      visualDensity: const VisualDensity(vertical: -2),
     );
   }
 }

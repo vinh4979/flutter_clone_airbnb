@@ -1,5 +1,6 @@
 import 'package:airbnb_clone_flutter/features/edit_profile/domain/entities/update_user_info.dart';
 import 'package:airbnb_clone_flutter/features/edit_profile/presentation/providers/edit_profile_provider.dart';
+import 'package:airbnb_clone_flutter/features/edit_avatar/presentation/widgets/edit_profile_avatar_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../profile_reactive/presentation/providers/user_profile_provider.dart';
@@ -80,6 +81,10 @@ class EditProfileScreen extends ConsumerWidget {
             (user) => ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               children: [
+                // ✅ Avatar section
+                EditProfileAvatarSection(currentAvatarUrl: user.avatar),
+                const SizedBox(height: 24),
+
                 _buildSectionItem(
                   context,
                   label: 'Tên pháp lý',
@@ -208,7 +213,34 @@ class EditProfileScreen extends ConsumerWidget {
                   context,
                   label: 'Vai trò',
                   value: user.role.toUpperCase(),
-                  onEdit: null,
+                  onEdit: () async {
+                    final selectedRole = await showModalBottomSheet<String>(
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              title: const Text('USER'),
+                              onTap: () => Navigator.pop(context, 'USER'),
+                            ),
+                            ListTile(
+                              title: const Text('ADMIN'),
+                              onTap: () => Navigator.pop(context, 'ADMIN'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    if (selectedRole != null && selectedRole != user.role) {
+                      await _updateUser(
+                        ref,
+                        user.id,
+                        user.copyWith(role: selectedRole),
+                      );
+                    }
+                  },
                 ),
               ],
             ),

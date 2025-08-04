@@ -7,7 +7,7 @@ class AuthRemoteDataSource {
 
   AuthRemoteDataSource(this.dio);
 
-  // ✅ Đăng nhập
+  // Đăng nhập
   Future<UserModel> login(String email, String password) async {
     try {
       final response = await dio.post(
@@ -28,7 +28,7 @@ class AuthRemoteDataSource {
     }
   }
 
-  // ✅ Đăng ký (chỉ trả true/false hoặc throw nếu lỗi)
+  // Đăng ký
   Future<void> register(String email, String password) async {
     try {
       final response = await dio.post(
@@ -37,7 +37,6 @@ class AuthRemoteDataSource {
       );
 
       AppLogger.prettyJson(response.data, tag: 'Register response');
-      // Bạn có thể xử lý nếu muốn lấy gì thêm từ response.data['content']
     } on DioException catch (e) {
       final message =
           e.response?.data['content'] ??

@@ -17,10 +17,8 @@ class SearchRoomsModal extends ConsumerStatefulWidget {
 class _SearchRoomsModalState extends ConsumerState<SearchRoomsModal> {
   List<LocationModel> locations = [];
   LocationModel? selectedLocation;
-
   DateTimeRange? selectedDateRange;
   int guestCount = 1;
-
   bool isLoading = true;
 
   @override
@@ -31,17 +29,14 @@ class _SearchRoomsModalState extends ConsumerState<SearchRoomsModal> {
 
   Future<void> _loadLocations() async {
     final rawLocations = await ExploreRemoteDataSource().fetchLocations();
-
     final uniqueMap = <String, LocationModel>{};
     for (final loc in rawLocations) {
       final key = "${loc.tinhThanh}, ${loc.quocGia}";
-      uniqueMap[key] = loc; // tự động override nếu trùng, giữ 1 cái
+      uniqueMap[key] = loc;
     }
 
     locations = uniqueMap.values.toList();
-    setState(() {
-      isLoading = false;
-    });
+    setState(() => isLoading = false);
   }
 
   void _resetForm() {
@@ -64,7 +59,7 @@ class _SearchRoomsModalState extends ConsumerState<SearchRoomsModal> {
       soLuongKhach: guestCount,
     );
 
-    Navigator.of(context).pop(); // đóng modal
+    Navigator.of(context).pop();
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => const SearchRoomsScreen()));
@@ -73,12 +68,28 @@ class _SearchRoomsModalState extends ConsumerState<SearchRoomsModal> {
   @override
   Widget build(BuildContext context) {
     final dateFormatter = DateFormat('dd/MM/yyyy');
+    const primaryColor = Color(0xFFFF385C); // Màu chủ đạo Airbnb
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tìm kiếm chỗ ở"),
+        title: Text(
+          "Tìm kiếm chỗ ở",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[600],
+          ),
+        ),
         actions: [
-          TextButton(onPressed: _resetForm, child: const Text("Xoá tất cả")),
+          TextButton(
+            onPressed: _resetForm,
+            child: Text(
+              "Xoá tất cả",
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                color: Colors.grey[600],
+              ),
+            ),
+          ),
         ],
       ),
       body:
@@ -95,6 +106,10 @@ class _SearchRoomsModalState extends ConsumerState<SearchRoomsModal> {
                   DropdownButtonFormField<LocationModel>(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                     ),
                     isExpanded: true,
                     value: selectedLocation,
@@ -122,6 +137,36 @@ class _SearchRoomsModalState extends ConsumerState<SearchRoomsModal> {
                         context: context,
                         firstDate: now,
                         lastDate: now.add(const Duration(days: 365)),
+                        builder: (context, child) {
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                              colorScheme: ColorScheme.light(
+                                primary: primaryColor,
+                                onPrimary: Colors.white,
+                                onSurface: Colors.black,
+                              ),
+                              textButtonTheme: TextButtonThemeData(
+                                style: TextButton.styleFrom(
+                                  foregroundColor: primaryColor,
+                                ),
+                              ),
+                              datePickerTheme: DatePickerThemeData(
+                                rangeSelectionBackgroundColor: primaryColor,
+                                rangeSelectionOverlayColor:
+                                    WidgetStateProperty.all(
+                                      primaryColor.withValues(alpha: 0.9),
+                                    ),
+                                todayBackgroundColor: WidgetStateProperty.all(
+                                  primaryColor.withValues(alpha: 0.3),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                            ),
+                            child: child!,
+                          );
+                        },
                       );
                       if (picked != null) {
                         setState(() {
@@ -132,7 +177,7 @@ class _SearchRoomsModalState extends ConsumerState<SearchRoomsModal> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 12,
+                        vertical: 14,
                       ),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade400),
@@ -142,6 +187,7 @@ class _SearchRoomsModalState extends ConsumerState<SearchRoomsModal> {
                         selectedDateRange == null
                             ? "Chọn khoảng thời gian"
                             : "${dateFormatter.format(selectedDateRange!.start)} → ${dateFormatter.format(selectedDateRange!.end)}",
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                   ),
@@ -155,24 +201,37 @@ class _SearchRoomsModalState extends ConsumerState<SearchRoomsModal> {
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.remove),
+                        icon: const Icon(Icons.remove_circle_outline),
                         onPressed:
                             guestCount > 1
                                 ? () => setState(() => guestCount--)
                                 : null,
                       ),
-                      Text('$guestCount khách'),
+                      Text(
+                        '$guestCount khách',
+                        style: const TextStyle(fontSize: 16),
+                      ),
                       IconButton(
-                        icon: const Icon(Icons.add),
+                        icon: const Icon(Icons.add_circle_outline),
                         onPressed: () => setState(() => guestCount++),
                       ),
                     ],
                   ),
 
                   const SizedBox(height: 32),
-                  ElevatedButton(
-                    onPressed: selectedLocation == null ? null : _submitSearch,
-                    child: const Text("Tìm kiếm"),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        textStyle: const TextStyle(fontSize: 16),
+                      ),
+                      onPressed:
+                          selectedLocation == null ? null : _submitSearch,
+                      child: const Text("Tìm kiếm"),
+                    ),
                   ),
                 ],
               ),

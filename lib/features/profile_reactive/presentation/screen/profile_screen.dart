@@ -17,7 +17,7 @@ class _ReactiveProfileScreenState extends ConsumerState<ReactiveProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Theo dõi token: khi login/logout → rebuild UI
+    // Theo dõi token: khi login/logout -> rebuild UI
     ref.listen<String?>(tokenProvider, (previous, next) {
       if (previous != next) {
         setState(() {
@@ -26,15 +26,15 @@ class _ReactiveProfileScreenState extends ConsumerState<ReactiveProfileScreen> {
       }
     });
 
-    // ✅ Gán token lúc đầu
+    // Gán token lúc đầu
     _token ??= ref.read(tokenProvider);
 
-    // ✅ Nếu chưa đăng nhập → hiện giao diện Airbnb
+    // Nếu chưa đăng nhập -> hiện giao diện Airbnb
     if (_token == null) {
       return const LoggedOutProfileView();
     }
 
-    // ✅ Nếu đã đăng nhập → hiển thị thông tin người dùng
+    // Nếu đã đăng nhập -> hiển thị thông tin người dùng
     return LoggedInProfileView(token: _token!);
   }
 }

@@ -10,7 +10,7 @@ class LikedRoomsNotifier extends StateNotifier<Set<int>> {
     _loadFromHive();
   }
 
-  final _box = Hive.box('liked_rooms');
+  final _box = Hive.box<dynamic>('liked_rooms');
 
   void _loadFromHive() {
     final ids = _box.get('liked', defaultValue: <int>[]);

@@ -2,7 +2,10 @@ import 'package:airbnb_clone_flutter/core/di/providers.dart';
 import 'package:airbnb_clone_flutter/core/storage/secure_storage.dart';
 import 'package:airbnb_clone_flutter/features/auth/presentation/providers/auth_token_provider.dart';
 import 'package:airbnb_clone_flutter/features/profile/presentation/providers/profile_provider.dart';
+import 'package:airbnb_clone_flutter/providers/liked_rooms_provider.dart';
+import 'package:airbnb_clone_flutter/providers/token_check_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, AsyncValue<String?>>(
@@ -14,7 +17,7 @@ class AuthController extends StateNotifier<AsyncValue<String?>> {
 
   AuthController(this.ref) : super(const AsyncValue.data(null));
 
-  /// ✅ Check token từ local khi app khởi động
+  // Check token từ local khi app khởi động
   Future<void> checkAuthStatus() async {
     state = const AsyncValue.loading();
     try {
@@ -26,7 +29,7 @@ class AuthController extends StateNotifier<AsyncValue<String?>> {
     }
   }
 
-  /// ✅ Đăng nhập
+  // Đăng nhập
   Future<bool> login(String email, String password) async {
     state = const AsyncValue.loading();
     try {
@@ -36,8 +39,8 @@ class AuthController extends StateNotifier<AsyncValue<String?>> {
       final token = user.token;
 
       await SecureStorage().saveToken(token);
-      ref.read(tokenProvider.notifier).state = token; // ✅ cập nhật RAM
-      ref.invalidate(userProfileProvider); // ✅ gọi lại API user
+      ref.read(tokenProvider.notifier).state = token;
+      ref.invalidate(userProfileProvider);
       state = AsyncValue.data(token);
       return true;
     } catch (e, st) {
@@ -46,7 +49,7 @@ class AuthController extends StateNotifier<AsyncValue<String?>> {
     }
   }
 
-  /// ✅ Đăng ký + tự login
+  // Đăng ký + tự login
   Future<bool> registerAndLogin(String email, String password) async {
     state = const AsyncValue.loading();
     try {
@@ -76,14 +79,21 @@ class AuthController extends StateNotifier<AsyncValue<String?>> {
     }
   }
 
-  /// ✅ Logout: xoá local + reset state
+  // Logout: xoá local + reset state
   Future<void> logout() async {
-    await SecureStorage().deleteToken();
-    ref.read(tokenProvider.notifier).state = null;
-    ref.invalidate(userProfileProvider); // ✅ reset lại user
-    state = const AsyncValue.data(null);
+    final storage = SecureStorage();
+    await storage.deleteToken(); // Xoá token
+
+    await Hive.box<dynamic>(
+      'liked_rooms',
+    ).clear(); // 🧹 Xoá danh sách yêu thích
+
+    ref.invalidate(tokenProvider); // ✅ Reset token
+    ref.invalidate(tokenCheckProvider); // ✅ Reset check login
+    ref.invalidate(userProfileProvider); // ✅ Reset user info
+    ref.invalidate(likedRoomsProvider); // ✅ Reset likedRooms local
   }
 
-  /// ✅ Getter token
+  //Get token
   String? get token => state.valueOrNull;
 }

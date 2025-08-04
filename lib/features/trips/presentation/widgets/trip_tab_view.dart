@@ -13,7 +13,6 @@ class TripTabView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🧱 Header giống Airbnb
           Padding(
             padding: EdgeInsets.fromLTRB(24, 40, 24, 12),
             child: Column(

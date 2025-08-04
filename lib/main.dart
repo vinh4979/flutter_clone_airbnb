@@ -10,7 +10,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  await Hive.openBox('liked_rooms');
+  // await Hive.deleteBoxFromDisk('liked_rooms');
+  await Hive.openBox<dynamic>('liked_rooms');
 
   final container = ProviderContainer();
   final token = await SecureStorage().readToken();

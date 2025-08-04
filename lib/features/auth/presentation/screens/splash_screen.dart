@@ -35,7 +35,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       context.go('/main');
     } else {
       context.go('/main'); // vẫn vào main layout
-      // ❗ Delay nhỏ rồi show modal login
+      // Delay nhỏ rồi show modal login
       Future.delayed(const Duration(milliseconds: 300), () {
         if (!mounted) return;
         showAppModal(context, AppModalType.auth); // login/register

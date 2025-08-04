@@ -7,6 +7,7 @@ String genRandomRating({double min = 3.5, double max = 5.0}) {
   return value.toStringAsFixed(1);
 }
 
+// do giá phong API trả về số ko được đẹp nên func này giúp làm đẹp giá phòng VND
 String formatRoomPrice(dynamic rawPrice) {
   final numberFormat = NumberFormat.decimalPattern('vi_VN');
   final random = Random();
@@ -23,7 +24,7 @@ String formatRoomPrice(dynamic rawPrice) {
   if (price <= 0) {
     price = 200000 + random.nextInt(700000); // 200.000 -> 900.000
   }
-  // Nếu giá nhỏ < 100 (kiểu 12), nhân 10.000
+  // Nếu giá nhỏ < 100
   else if (price < 1000) {
     price *= 10000;
   }

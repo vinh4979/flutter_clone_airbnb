@@ -5,7 +5,7 @@ class CommentDateUtil {
     try {
       DateTime? date;
 
-      // Trường hợp ISO 8601 (vd: 2024-10-08T15:49:50.196Z)
+      // Trường hợp định dạng 2024-10-08T15:49:50.196Z
       if (rawDate.contains('T') && rawDate.contains('Z')) {
         date = DateTime.parse(rawDate).toLocal();
         final hour = DateFormat('HH:mm').format(date);

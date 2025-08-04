@@ -1,16 +1,3 @@
-// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-// class SecureStorage {
-//   final _secure = const FlutterSecureStorage();
-
-//   Future<void> saveToken(String token) =>
-//       _secure.write(key: 'token', value: token);
-
-//   Future<String?> readToken() => _secure.read(key: 'token');
-
-//   Future<void> clear() => _secure.deleteAll();
-// }
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

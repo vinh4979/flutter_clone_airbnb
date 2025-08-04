@@ -27,21 +27,48 @@ class FavoriteScreen extends ConsumerWidget {
 
             if (likedRooms.isEmpty) return const _EmptyFavoriteView();
 
-            return Scaffold(
-              appBar: AppBar(title: const Text('Yêu thích'), centerTitle: true),
-              body: Padding(
-                padding: const EdgeInsets.all(16),
-                child: GridView.builder(
-                  itemCount: likedRooms.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisExtent: 270,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(24, 40, 24, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Yêu thích',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Các phòng bạn đánh dấu sẽ hiển thị tại đây.',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ],
                   ),
-                  itemBuilder: (_, index) => RoomCard(room: likedRooms[index]),
                 ),
-              ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: GridView.builder(
+                      itemCount: likedRooms.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisExtent: 270,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                      itemBuilder:
+                          (_, index) => RoomCard(room: likedRooms[index]),
+                    ),
+                  ),
+                ),
+              ],
             );
           },
           loading:
@@ -79,7 +106,7 @@ class _EmptyFavoriteView extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               'Chưa có phòng nào được bạn đánh dấu là yêu thích.',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
         ),

@@ -50,7 +50,7 @@ class _TripsScreenState extends ConsumerState<TripsScreen> {
         if (!hasTrips) return const TripLoggedInEmptyView();
 
         // Có ít nhất 1 chuyến đi
-        return const TripTabView(); // sẽ tạo ở bước tiếp theo
+        return const TripTabView();
       },
     );
   }

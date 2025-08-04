@@ -9,7 +9,7 @@ class RoomStyleUtil {
     'Phòng hiện đại với nội thất thông minh',
   ];
 
-  /// Trả về một phong cách ngẫu nhiên
+  // Trả về một phong cách ngẫu nhiên
   static String getRandomStyle() {
     final random = Random();
     return _roomStyles[random.nextInt(_roomStyles.length)];
